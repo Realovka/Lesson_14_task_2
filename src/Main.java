@@ -1,32 +1,47 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Main {
-    public static void main(String[] args) {
-        List<String> arrayList = new ArrayList<>();
-            try(BufferedReader bufferedReader=new BufferedReader(new FileReader("text.txt"))){
-                int numberOfWords=0;
-                String sentence;
-                while ((sentence=bufferedReader.readLine())!=null) {
-                    numberOfWords=TextFormater.getNumberOfWords(sentence);
-                    if ((numberOfWords>=3 && numberOfWords<=5) || TextFormater.searchPalindrome(sentence)){
-                        arrayList.add(sentence);
+    public static void main(String[] args) throws FileNotFoundException {
+        String[] str = new String[0];
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader("text.txt"))) {
+            String sentence;
+            while ((sentence = bufferedReader.readLine()) != null) {
+                str = TextFormater.getArray(sentence);
+                try (FileWriter fileWriter = new FileWriter("result.txt", true)) {
+                    for (String item : str) {
+                        if (!item.endsWith("."))
+                            fileWriter.write(item + " ");
+                        else fileWriter.write(item + "\n");
                     }
                 }
-            } catch (IOException e){
-                e.printStackTrace();
+
+
             }
-       try (FileWriter fileWriter=new FileWriter("result.txt")){
-           for(String item: arrayList){
-               fileWriter.write(item+"\n");
-           }
-       } catch (IOException e){
-           e.printStackTrace();
-       }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader("result.txt"))){
+            String sentence;
+            while ((sentence=bufferedReader.readLine())!=null){
+                if(((TextFormater.getNumberOfWords(sentence)>=3) && (TextFormater.getNumberOfWords(sentence))<=5)||
+                        TextFormater.searchPalindrome(sentence)){
+                    try (FileWriter fileWriter = new FileWriter("resultFinal.txt",true)){
+                        fileWriter.write(sentence+"\n");
+                    } catch (IOException e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
     }
+}
 
